@@ -1,0 +1,13 @@
+[package]
+name = "sudoku_solver"
+version = "0.1.0"
+edition = "2021"
+authors = ["Clément CHAPOT <clement@chapot.ovh>"]
+description = "Sudoku solver"
+readme = "README.md"
+repository = "https://github.com/clemsys/sudoku_solver"
+license = "MIT OR Apache-2.0"
+
+[profile.release]
+strip = true
+lto = true
