@@ -1,4 +1,4 @@
-use self::super::sudoku::Sudoku;
+use super::sudoku::Sudoku;
 
 pub fn solve(sudoku: &Sudoku) -> Option<Sudoku> {
     match sudoku.least_possibilities() {
