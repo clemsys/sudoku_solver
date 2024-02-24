@@ -5,13 +5,17 @@ Description: simple sudoku solver based on backtracking, packed in a library wit
 
 ## Building
 
-Build the project using `cargo build --release`.
+Build the project using `make`.
 
-## Running
+This calls `cargo build --release` and copies the binary from `target/release` to the root of the repository.
 
-Run using `./target/release/solver` from the root of the repository.
+## Usage
+
+Run using `./solver`.
 
 `solver` reads a sudoku from `stdin`. All characters from the input string are ignored, except `[1-9]` and `.`, which are used to indicate cells whose value has to be found by the solver.
+
+Example: `echo ".9.2..86..8.53....5......1..6..8..9.8.5.......7.4..2....4.5.6.....8.........79.5." | ./solver`
 
 ## Project structure
 

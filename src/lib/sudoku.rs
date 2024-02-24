@@ -7,9 +7,7 @@ pub enum Cell {
 type Board = [[Cell; 9]; 9];
 
 #[derive(Clone)]
-pub struct Sudoku {
-    board: Board,
-}
+pub struct Sudoku(Board);
 
 impl Default for Sudoku {
     fn default() -> Self {
@@ -17,25 +15,37 @@ impl Default for Sudoku {
     }
 }
 
+impl std::ops::Deref for Sudoku {
+    type Target = Board;
+
+    fn deref(&self) -> &Self::Target {
+        &self.0
+    }
+}
+
+impl std::ops::DerefMut for Sudoku {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.0
+    }
+}
+
 impl std::ops::Index<(usize, usize)> for Sudoku {
     type Output = Cell;
 
     fn index(&self, index: (usize, usize)) -> &Self::Output {
-        &self.board[index.0][index.1]
+        &self.0[index.0][index.1]
     }
 }
 
 impl std::ops::IndexMut<(usize, usize)> for Sudoku {
     fn index_mut(&mut self, index: (usize, usize)) -> &mut Self::Output {
-        &mut self.board[index.0][index.1]
+        &mut self.0[index.0][index.1]
     }
 }
 
 impl Sudoku {
     pub const fn new() -> Self {
-        Self {
-            board: [[Cell::Allowed([true; 9]); 9]; 9],
-        }
+        Self([[Cell::Allowed([true; 9]); 9]; 9])
     }
 
     pub fn set(&mut self, index: (usize, usize), value: u8) -> Result<(), ()> {
@@ -67,7 +77,7 @@ impl Sudoku {
 
     /// Returns the cells with the cell which is the most constrained by its peers
     /// as well as the number of allowed values for that cell.
-    pub fn least_possibilities(&self) -> Option<((usize, usize), usize)> {
+    pub(super) fn least_possibilities(&self) -> Option<((usize, usize), usize)> {
         let mut min_count = 10;
         let mut index = None;
         'outer: for i in 0..9 {
@@ -128,13 +138,22 @@ impl std::str::FromStr for Sudoku {
     }
 }
 
+impl std::fmt::Display for Cell {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Cell::Value(v) => write!(f, "{v}"),
+            Cell::Allowed(_) => write!(f, "·"),
+        }
+    }
+}
+
 impl std::fmt::Display for Sudoku {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         const LINE_SEP: &str = "+-------+-------+-------+";
 
         let mut s = String::new();
 
-        for (i, row) in self.board.iter().enumerate() {
+        for (i, row) in self.iter().enumerate() {
             if i % 3 == 0 {
                 s.push_str(LINE_SEP);
                 s.push('\n');
@@ -145,10 +164,7 @@ impl std::fmt::Display for Sudoku {
                     s.push_str("| ");
                 }
 
-                match cell {
-                    Cell::Value(v) => s.push_str(&format!("{v} ")),
-                    Cell::Allowed(_) => s.push_str("· "),
-                }
+                s.push_str(&format!("{cell} "));
             }
 
             s.push_str("|\n");

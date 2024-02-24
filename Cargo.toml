@@ -11,3 +11,4 @@ license = "MIT OR Apache-2.0"
 [profile.release]
 strip = true
 lto = true
+panic = "abort"
