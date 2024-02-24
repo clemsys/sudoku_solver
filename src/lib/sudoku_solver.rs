@@ -9,7 +9,7 @@ pub fn solve(sudoku: &Sudoku) -> Option<Sudoku> {
             }
             for value in 1..10 {
                 let mut s = sudoku.clone();
-                if let Ok(()) = s.set(index, value) {
+                if s.set(index, value).is_ok() {
                     if let Some(solved) = solve(&s) {
                         return Some(solved);
                     }
